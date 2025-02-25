@@ -1,9 +1,9 @@
 import flet as ft
 from controlador import controlador_contratista
 
+
 datos_contratista={}
 def obtener_pantalla_contratistas(): #debo hacer validaciones
-        
             
         orden = ft.TextField(dense=True,label="Orden", border_color= ft.Colors.GREY_100,bgcolor=ft.Colors.GREY_50)
         empresa = ft.TextField(dense=True,label="Empresa",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
@@ -18,25 +18,7 @@ def obtener_pantalla_contratistas(): #debo hacer validaciones
         provincia = ft.TextField(dense=True,label="Provincia",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
         ficha= ft.TextField(dense=True,label="Ficha Específica",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
         
-        def pick_date(e):
-            e.page.dialog = date_picker
-            date_picker.open = True
-            e.page.update()
         
-        def on_date_selected(e):
-            print(date_picker)
-            print(date_picker.value)
-            selected_date.value = f"Fecha seleccionada: {date_picker.value}"
-            selected_date.update()
-            
-        
-        date_picker =ft.DatePicker(
-            #locale="es",
-            on_change=on_date_selected
-        )
-        
-        selected_date = ft.Text("No se ha seleccionado ninguna fecha")
-        select_button = ft.ElevatedButton("Seleccionar fecha", on_click=pick_date)
             
         def limpiar():
              ficha.value=orden.value = empresa.value = monto_contrato.value = fecha_inicio.value = fecha_finalizacion.value = fecha_emision.value = fecha_suscripcion.value = ruc.value = costo_mensual.value= provincia.value = localidad.value = ""
@@ -69,6 +51,7 @@ def obtener_pantalla_contratistas(): #debo hacer validaciones
                 controlador_contratista.agregar_contratista(datos_contratista)
                 limpiar()
                 show_data()
+                
                 e.page.update()
                 print("Se ha agregado corretamente el contratista")
         
@@ -120,14 +103,14 @@ def obtener_pantalla_contratistas(): #debo hacer validaciones
             
         
         show_data()
-
+        
         formulario = ft.Container(
             bgcolor=ft.colors.WHITE,
             border_radius=0,
             col=4,
             padding=ft.padding.all(10),
             content=ft.Column(
-                alignment=ft.MainAxisAlignment.SPACE_AROUND,
+                #alignment=ft.MainAxisAlignment.SPACE_AROUND,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                 controls=[
                     # Contenedor para organizar en dos columnas
@@ -145,10 +128,6 @@ def obtener_pantalla_contratistas(): #debo hacer validaciones
                                     ficha,
                                     monto_contrato,
                                     costo_mensual,
-                                    select_button,
-                                    selected_date,
-                                    date_picker
-                                    
                                 ]
                             ),
                             # Segunda columna
@@ -162,10 +141,13 @@ def obtener_pantalla_contratistas(): #debo hacer validaciones
                                     fecha_suscripcion,
                                     localidad,
                                     provincia,
+                                    
                                 ]
                             ),
                         ]
                     ),
+                    
+                    
                     # Botones alineados al centro
                     ft.Container(
                         content=ft.Row(

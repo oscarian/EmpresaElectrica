@@ -19,7 +19,7 @@ def obtener_pantalla_facturas(): #debo hacer validaciones
         t=ft.Text() 
 
         dropdown_factura =ft.Dropdown(on_change=dropdown_changed, label="Contratista", hint_text="Escoja un contratista", autofocus=True)
-        
+        dropdown_factura.options.clear
         for contrato in contratos:
                 dropdown_factura.options.append(ft.dropdown.Option(contrato[2]))
         
