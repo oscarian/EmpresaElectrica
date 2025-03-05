@@ -127,6 +127,7 @@ class Generar_Docs:
         return documento
 
     def generar(self):
+        valor=False
         root = tk.Tk()
         root.withdraw()  # Oculta la ventana principal
         root.attributes('-topmost', True)  # Asegurar que esté al frente
@@ -144,6 +145,7 @@ class Generar_Docs:
                     ruta_pdf = os.path.join(carpeta_seleccionada, "Acta_Entrega.pdf")
                     convert(ruta_word, ruta_pdf)
                     print("Word y Pdf generados")
+                    
                 elif self.pdf==False and self.word==True:
                     docActaEntrega.save(ruta_word)
                     print("Se genero solo el Word")
@@ -153,6 +155,7 @@ class Generar_Docs:
                     convert(ruta_word, ruta_pdf)
                     os.remove(ruta_word)
                     print("Solo Pdf generados")
+            
 
             if self.informe_administrador==True:
                 docInformeAdministrador=self.generar_informe_administrador()
@@ -172,6 +175,8 @@ class Generar_Docs:
                     convert(ruta_word, ruta_pdf)
                     os.remove(ruta_word)
                     print("Solo Pdf generados")
+            valor=True
+        return valor
 
 
 

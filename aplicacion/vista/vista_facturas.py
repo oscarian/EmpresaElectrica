@@ -167,23 +167,28 @@ def obtener_pantalla_facturas(): #debo hacer validaciones
                             spacing = 5,
                             alignment=ft.MainAxisAlignment.CENTER,
                             controls= [
-                            ft.TextButton(text="Guardar",
+                            ft.ElevatedButton(text="Guardar",
                                         icon = ft.icons.SAVE,
                                         icon_color= "white",
-                                        style= ft.ButtonStyle(color = "white",  bgcolor =ft.colors.BLUE_800),
-                                        
+                                        style=ft.ButtonStyle(color="white",bgcolor=ft.colors.BLUE_700,),
+                                        animate_scale=ft.Animation(300, ft.AnimationCurve.BOUNCE_OUT),  # Animación al hacer clic
+                                        on_hover=lambda e: (setattr(e.control, "style", ft.ButtonStyle(color="white",bgcolor=ft.colors.BLUE_900 if e.data == "true" else ft.colors.BLUE_800)),e.control.update()),
                                         on_click= agregar_factura,
                                         ),
-                            ft.TextButton(text="Actualizar",
+                            ft.ElevatedButton(text="Actualizar",
                                         icon = ft.icons.UPDATE,
                                         icon_color= "white",
-                                        style= ft.ButtonStyle(color = "white",  bgcolor =ft.colors.BLUE_800),
+                                        style=ft.ButtonStyle(color="white",bgcolor=ft.colors.BLUE_700,),
+                                        animate_scale=ft.Animation(300, ft.AnimationCurve.BOUNCE_OUT),  # Animación al hacer clic
+                                        on_hover=lambda e: (setattr(e.control, "style", ft.ButtonStyle(color="white",bgcolor=ft.colors.BLUE_900 if e.data == "true" else ft.colors.BLUE_800)),e.control.update()),
                                         ###on_click=update_data,
                                         ),    
-                            ft.TextButton(text="Borrar",
+                            ft.ElevatedButton(text="Borrar",
                                         icon = ft.icons.DELETE,
                                         icon_color= "white",
-                                        style= ft.ButtonStyle(color = "white",  bgcolor =ft.colors.BLUE_800),
+                                        style=ft.ButtonStyle(color="white",bgcolor=ft.colors.BLUE_700,),
+                                        animate_scale=ft.Animation(300, ft.AnimationCurve.BOUNCE_OUT),  # Animación al hacer clic
+                                        on_hover=lambda e: (setattr(e.control, "style", ft.ButtonStyle(color="white",bgcolor=ft.colors.BLUE_900 if e.data == "true" else ft.colors.BLUE_800)),e.control.update()),
                                         ###on_click= delete_data,
                                         ),                          
                             ]

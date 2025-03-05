@@ -1,8 +1,9 @@
 import flet as ft
 from controlador import controlador_contratista
 from controlador import controlador_factura
-from controlador import controlador_informes
 from controlador.controlador_documentos import Generar_Docs
+import tkinter as tk
+from tkinter import messagebox
 
 def obtener_pantalla_informes(): #debo hacer validaciones
         
@@ -38,43 +39,69 @@ def obtener_pantalla_informes(): #debo hacer validaciones
                       listaDocs=[c1.value,c2.value]
                       listaWP=[word.value,pdf.value]
                       contDocs=Generar_Docs(listaDocs,listaWP,administrador.value,contratista,factura)
-                      
-                      contDocs.generar() 
-                      #controlador_informes.generar_acta_entrega(administrador.value,contratista,factura)
-                      
+                      valor=contDocs.generar() 
+                      print(valor)
+                      root = tk.Tk()
+                      root.withdraw()
+                      if valor == True:
+                            messagebox.showinfo("Éxito", "Documentos generados con éxito")
+                      else:
+                            messagebox.showerror("Error", "No se generó ningún Documento")
 
-            """if c1.value==True:
-                contratistas = controlador_contratista.obtener_contratistas()
-                facturas = controlador_factura.obtener_facturas()
-                for contratista in contratistas:
-                    if c.value==contratista[2]:
-                        for factura in facturas:
-                            if f.value==factura[4]:
-                                controlador_informes.generar_acta_entrega(administrador.value,contratista,factura)
-                
-                e.page.update()"""
-
-        t = ft.Text()
+                    
+                            
+                      
+        
         c1 = ft.Checkbox(label="Acta de Entrega/Recepción", value=False)
         c2 = ft.Checkbox(label="Informe Administrador", value=False)
+        c3 = ft.Checkbox(label="Informe...", value=False)
+        c4 = ft.Checkbox(label="Informe...", value=False)
         word = ft.Checkbox(label="Crear Word", value=False)
         pdf = ft.Checkbox(label="Crear PDF", value=False)
        
-        generar_button = ft.ElevatedButton(text="Generar", on_click=generar_informes)
+        generar_button = ft.ElevatedButton(
+            text="Generar",
+            icon=ft.icons.ADD_CIRCLE,
+            icon_color="white",
+            style=ft.ButtonStyle(color="white",bgcolor=ft.colors.BLUE_700,),
+            on_click=generar_informes,
+            animate_scale=ft.Animation(300, ft.AnimationCurve.BOUNCE_OUT),  # Animación al hacer clic
+            on_hover=lambda e: (setattr(e.control, "style", ft.ButtonStyle(color="white",bgcolor=ft.colors.BLUE_900 if e.data == "true" else ft.colors.BLUE_800)),e.control.update()),
+        )
+
         
+                                    
+                                    
+                                    
         
         formulario = ft.Container(
             bgcolor= ft.Colors.WHITE10,
-            border_radius=10,
-            col = 8,
-            padding=ft.padding.all(10),
+            border_radius=50,
+            padding=ft.padding.all(50),
+            
             content= ft.Column(   
                 expand=True,           
                 controls=[
                     administrador,
                     dropdown_contratista,
                     dropdown_factura,
-                    c1, c2, word, pdf, generar_button, t,
+                    ft.Divider(color=ft.Colors.LIGHT_BLUE, thickness=2),
+                    ft.Row(controls=[ft.Text("Seleccione los documentos a generar:"),]),
+                    ft.Row(
+                        controls=[c1, c2, c3, c4],
+                    ),
+                    ft.Divider(color=ft.Colors.LIGHT_BLUE, thickness=2),
+                    ft.Row(controls=[ft.Text("Seleccione el formato:"),]),
+                    ft.Row(
+                        vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        controls=[word, pdf],
+                    ),
+                    ft.Row(
+                        vertical_alignment=ft.CrossAxisAlignment.CENTER,
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        controls=[generar_button],
+                    ),
                 ]
             )
         )
