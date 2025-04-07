@@ -1,22 +1,55 @@
 from docxtpl import DocxTemplate
 from datetime import datetime
-import calendar
 import tkinter as tk
 from tkinter import filedialog
 from num2words import num2words
 from docx2pdf import convert
 import os
+import openpyxl
+import math
+import calendar
+
 
 
 class Generar_Docs:
-    def __init__(self,listaDocs,listaWP,administrador,contratista,factura):
+    def __init__(self,listaDocs,listaWP,administrador,contratista,factura,facturas_contratisa):
         self.acta_entrega=listaDocs[0]
         self.informe_administrador=listaDocs[1]
+        self.modelo_quipux=listaDocs[2]
         self.word=listaWP[0]
         self.pdf=listaWP[1]
+        self.excel=listaWP[2]
         self.administrador=administrador
         self.contratista=contratista
         self.factura=factura
+        self.facturas_contratisa=facturas_contratisa
+        
+
+    def obtener_fecha_fin_mes(self, mes, anio):
+        # Diccionario para convertir el nombre del mes a su número correspondiente
+        meses = {
+            "Enero": 1, "Febrero": 2, "Marzo": 3, "Abril": 4,
+            "Mayo": 5, "Junio": 6, "Julio": 7, "Agosto": 8,
+            "Septiembre": 9, "Octubre": 10, "Noviembre": 11, "Diciembre": 12
+        }
+
+        # Convertir el año a entero
+        try:
+            anio = int(anio)
+        except ValueError:
+            return "Año inválido"
+
+        # Obtener el número del mes
+        numero_mes = meses.get(mes.capitalize())  # Capitaliza para evitar errores con minúsculas
+        
+        if not numero_mes:
+            return "Mes inválido"
+
+        # Obtener el último día del mes
+        ultimo_dia = calendar.monthrange(anio, numero_mes)[1]
+
+        # Formatear la fecha en "DD-MM-AAAA"
+        return f"{ultimo_dia:02d}-{numero_mes:02d}-{anio}"
 
 
     def cifra_a_texto(self,monto):
@@ -125,6 +158,208 @@ class Generar_Docs:
         }
         documento.render(contenido)
         return documento
+    
+    def generar_modelo_quipux(self):
+        documento = DocxTemplate("aplicacion\plantillas\Modelo Quipux.docx")
+        contenido = {
+            'costo_mensual_a_texto':self.cifra_a_texto(self.contratista[9]),
+            'administrador':self.administrador,
+            'localidades':self.contratista[10],
+            'orden': self.contratista[1],
+            'empresa': self.contratista[2],
+            'mes_pago': self.factura[4],
+            'anio_pago':self.factura[5],
+            'costo_mensual': self.contratista[9],
+            
+        }
+        documento.render(contenido)
+        return documento
+
+
+
+
+    ####### FUNCIONES QUE ME SIRVEN PARA GENERAR EL EXCEL  
+    # 
+    # 
+    # 
+    #  
+
+    def obtener_factura_anterior(self):
+        """
+        Busca la factura del mes anterior en la lista de facturas del contratista.
+        
+        :param facturas_contratista: Lista de facturas del contratista.
+        :param factura_actual: La factura actual (objeto con índice 4 como mes y 5 como año).
+        :return: La factura del mes anterior si existe, de lo contrario, None.
+        """
+        if len(self.facturas_contratisa) <= 1:
+            return None  # No hay facturas anteriores
+        
+        # Obtener mes y año de la factura actual
+        mes_actual = self.factura[4]
+        año_actual = int(self.factura[5])
+
+        # Diccionario de meses para convertir nombres a números
+        meses = {
+            "Enero": 1, "Febrero": 2, "Marzo": 3, "Abril": 4,
+            "Mayo": 5, "Junio": 6, "Julio": 7, "Agosto": 8,
+            "Septiembre": 9, "Octubre": 10, "Noviembre": 11, "Diciembre": 12
+        }
+        
+        # Obtener el número del mes anterior
+        mes_actual_num = meses.get(mes_actual)
+        if not mes_actual_num:
+            return None  # Mes inválido
+
+        if mes_actual_num == 1:  # Si es enero, el mes anterior es diciembre del año anterior
+            mes_anterior_num = 12
+            año_anterior = año_actual - 1
+        else:
+            mes_anterior_num = mes_actual_num - 1
+            año_anterior = año_actual
+
+        # Convertir número de mes a nombre
+        mes_anterior = next((nombre for nombre, num in meses.items() if num == mes_anterior_num), None)
+        
+        # Buscar la factura del mes anterior en la lista
+        for fact in self.facturas_contratisa:
+            if fact[4] == mes_anterior and int(fact[5]) == año_anterior:
+                return fact  # Factura encontrada
+        
+        return None  # No se encontró una factura del mes anterior
+
+
+
+    def generar_excel(self):
+        print("generando excel")
+        wb = openpyxl.load_workbook("aplicacion\plantillas\PlantilaPagoExcel.xlsx")
+        
+        #----------------------------------------------------------------------------
+        #  HOJA PPAGO
+        hojaPpago = wb["Ppago"]
+        #-----------------------------------------------------------------------------
+        
+
+        #-----------------ENCABEZADO --------------------
+
+        hojaPpago["C13"] = self.contratista[2]                      #empresa
+        hojaPpago["C14"] = "$"+str(self.contratista[3])             #monto contrato
+        hojaPpago["C15"] = "SERVICIO DE LIMPIEZA TIPO III, DE ACUERDO A LA ORDEN DE COMPRA "+self.contratista[1]            #Obra + orden de compra
+        hojaPpago["C16"] = self.contratista[4]                      #fecha inicio
+        hojaPpago["C17"] = self.contratista[5]                      #fecha fin
+
+
+        hojaPpago["E13"] = "DAF-"+self.contratista[12]              #ficha contrato
+        hojaPpago["E14"] = self.factura[2]                          #nro factura
+        hojaPpago["E17"] = datetime.today().strftime("%d/%m/%Y")    #fecha informe
+        
+        hojaPpago["G10"] = self.obtener_planilla()                  #nro planilla
+        hojaPpago["G11"] = datetime.today().strftime("%d/%m/%Y")    #fecha de hoy
+        hojaPpago["G13"] = self.contratista[6]                      #fecha emision
+        hojaPpago["G14"] = datetime.today().strftime("%d/%m/%Y")    #fecha fact
+
+        #-----------------DESCRIPCION --------------------
+
+        hojaPpago["B21"]="Planilla mensual "+self.factura[4]+" por limpieza de edificios"
+        hojaPpago["E21"] = self.factura[7]                         #valor planillado                      
+        hojaPpago["E31"] = self.factura[7]                          #HAY QUE SUMAR LAS LOCALIDADES 
+        hojaPpago["G33"] = self.factura[7]                        #total planillado
+        hojaPpago["G34"] = math.trunc((self.factura[7]*0.15)*100)/100      #IVA
+        hojaPpago["G35"]=math.trunc((float(hojaPpago["G33"].value)+float(hojaPpago["G34"].value))*100)/100          #Total factura
+
+        #-----------------DESCUENTOS --------------------
+        hojaPpago["F38"]=math.trunc((float(hojaPpago["E21"].value)*0.1)*100)/100                       #Anticipo 10%
+        hojaPpago["F39"]=math.trunc((float(hojaPpago["G33"].value)*0.0275)*100)/100                    #Impuesto a la renta 2.75%
+        hojaPpago["F40"]=math.trunc((float(hojaPpago["G34"].value)*0.7)*100)/100                      #Retencion al Iva 70%
+        hojaPpago["F41"]=0.0  #Multas
+
+        hojaPpago["G43"]=math.trunc((float(hojaPpago["F38"].value)+float(hojaPpago["F39"].value)+float(hojaPpago["F40"].value)+float(hojaPpago["F41"].value))*100)/100 #Total descuentos
+        #Valor liquido
+        hojaPpago["G47"]=math.trunc((float(hojaPpago["G35"].value)-float(hojaPpago["G43"].value))*100)/100
+        #descripcion
+        hojaPpago["B50"]="Son: "+ self.cifra_a_texto(math.trunc(float(hojaPpago["G47"].value)*100)/100)
+        #observaciones
+        hojaPpago["B53"]="Observaciones: Se adjunta documentación de soporte de factura No. "+self.factura[2]+" e informe de Fiscalización de fecha "+datetime.today().strftime("%d/%m/%Y")+" correspondiente a la planilla Nro. "+self.obtener_planilla()
+        
+        #----------------------------------------------------------------------------
+        #  HOJA MULTAS
+        hojaMulta = wb["Multas"]
+        #-----------------------------------------------------------------------------
+        
+        #-----------------ENCABEZADO --------------------
+
+        hojaMulta["A8"] = "ANÁLISIS DE MULTAS PARA EL" \
+        " SEERVICIO DE LIMPIEZA TIPO III, DE ACUERDO A LA ORDEN DE COMPRA: "+self.contratista[1]
+
+        hojaMulta["C13"] = self.fecha_a_texto("f2",self.contratista[4])
+        hojaMulta["C14"] = self.fecha_a_texto("f2",self.obtener_fecha_fin_mes(self.factura[4],self.factura[5]))
+        hojaMulta["C15"] = self.fecha_a_texto("f2",self.obtener_fecha_fin_mes(self.factura[4],self.factura[5]))
+        hojaMulta["C16"]=  str(self.factura[8])+" días"
+        hojaMulta["A29"]=  self.administrador
+
+         #----------------------------------------------------------------------------
+        #  HOJA ESTADO
+        hojaEstado = wb["Estado"]
+        #-----------------------------------------------------------------------------
+        
+        #-----------------ENCABEZADO --------------------
+
+        hojaEstado["G12"] = self.obtener_planilla()                 #nro planilla
+        hojaEstado["G13"] = datetime.today().strftime("%d/%m/%Y")   #fecha hoy
+        hojaEstado["C16"] = self.contratista[2]                     #contrato
+        hojaEstado["E16"] = "DAF-"+self.contratista[12]             #ficha contrato
+        hojaEstado["G16"] = self.contratista[6]                     #ficha contrato
+        hojaEstado["C17"] = "SERVICIO DE LIMPIEZA TIPO III, DE ACUERDO A LA ORDEN DE COMPRA "+self.contratista[1]            #Obra + orden de compra
+        hojaEstado["C19"] = "$"+str(self.contratista[3])             #monto contrato
+        hojaEstado["C21"] = "$"+str(self.contratista[3])
+
+        #-----------------Valor ejecutado hasta la fecha --------------------
+        factura_anterior=self.obtener_factura_anterior()
+        if factura_anterior==None:
+            hojaEstado["F24"]=str(self.factura[7])+"  Eval."              #valor ejecutado hasta la fecha
+            hojaEstado["G24"]= str(math.trunc(float((self.factura[7]/self.contratista[3])*100)*100)/100)+"%"   #porcentaje
+            hojaEstado["F25"]=math.trunc((0*100))/100                            #valor ejecutado en el estado anterior
+            hojaEstado["G26"]=self.factura[7]              #valor de la presente planilla
+            hojaEstado["G27"]=math.trunc((self.factura[7]*0.15)*100)/100   #iva 15%
+            hojaEstado["G28"]=math.trunc((float(hojaPpago["G33"].value)+float(hojaPpago["G34"].value))*100)/100 #valor total
+            hojaEstado["F31"]=math.trunc((float(hojaPpago["E21"].value)*0.1)*100)/100   #retenido
+            hojaEstado["F34"]=hojaPpago["F38"].value   #anticipo total
+            hojaEstado["F35"]=hojaPpago["F39"].value   #impuesto a la renta
+            hojaEstado["F36"]=hojaPpago["F40"].value    #retencion iva
+            hojaEstado["F37"]=hojaPpago["F41"].value   #multas
+            hojaEstado["G39"]=hojaPpago["G43"].value    #total retencones
+            hojaEstado["G40"]=hojaPpago["G47"].value    #valor liquido
+            #cuadro de devoluciones de anticipos
+            hojaEstado["F43"]= math.trunc((self.contratista[3]*0.1)*100)/100    #anticipo entregado
+            hojaEstado["F44"]=hojaEstado["F31"].value                           #anticipos en la presente planilla
+            hojaEstado["F45"]=math.trunc((0)*100)/100                           #anticipos en la planilla anterior
+            hojaEstado["F46"]=hojaEstado["F44"].value                           #anticipo toal a la fecha
+            hojaEstado["F48"]=hojaEstado["G40"].value                                 #saldo total a cancelar
+
+        else:
+            hojaEstado["F24"]=self.factura[7]+factura_anterior[7]              #valor ejecutado hasta la fecha
+            hojaEstado["G24"]= str(math.trunc(float((float(hojaEstado["F24"].value)/self.contratista[3])*100)*100)/100)+"%"   #porcentaje
+            hojaEstado["F25"]=factura_anterior[7]                            #valor ejecutado en el estado anterior
+            hojaEstado["G26"]=self.factura[7]              #valor de la presente planilla
+            hojaEstado["G27"]=math.trunc((self.factura[7]*0.15)*100)/100   #iva 15%
+            hojaEstado["G28"]=math.trunc((float(hojaPpago["G33"].value)+float(hojaPpago["G34"].value))*100)/100 #valor total
+            #amortizacion de anticipo
+            hojaEstado["F31"]=math.trunc((float(hojaPpago["E21"].value)*0.1)*100)/100   #retenido
+            hojaEstado["F34"]=hojaPpago["F38"].value   #anticipo total
+            hojaEstado["F35"]=hojaPpago["F39"].value   #impuesto a la renta
+            hojaEstado["F36"]=hojaPpago["F40"].value    #retencion iva
+            hojaEstado["F37"]=hojaPpago["F41"].value   #multas
+            hojaEstado["G39"]=hojaPpago["G43"].value    #total retencones
+            hojaEstado["G40"]=hojaPpago["G47"].value    #valor liquido
+            #cuadro de devoluciones de anticipos
+            hojaEstado["F43"]= math.trunc((self.contratista[3]*0.1)*100)/100    #anticipo entregado
+            hojaEstado["F44"]=hojaEstado["F31"].value                           #anticipos en la presente planilla
+            hojaEstado["F45"]="Hay que evaluar"                          #anticipos en la planilla anterior
+            hojaEstado["F46"]="Hay que evaluar"                          #anticipo toal a la fecha
+            hojaEstado["F48"]=hojaEstado["G40"].value                                 #saldo total a cancelar
+
+
+        return wb
 
     def generar(self):
         valor=False
@@ -175,6 +410,31 @@ class Generar_Docs:
                     convert(ruta_word, ruta_pdf)
                     os.remove(ruta_word)
                     print("Solo Pdf generados")
+
+            if self.modelo_quipux==True:
+                
+                docModeloQuipux=self.generar_modelo_quipux()
+                ruta_word = os.path.join(carpeta_seleccionada, "Modelo_Quipux.docx")
+
+                if self.pdf==self.word==True:
+                    docModeloQuipux.save(ruta_word)
+                    ruta_pdf = os.path.join(carpeta_seleccionada, "Modelo_Quipux.pdf")
+                    convert(ruta_word, ruta_pdf)
+                    print("Word y Pdf generados")
+                elif self.pdf==False and self.word==True:
+                    docModeloQuipux.save(ruta_word)
+                    print("Se genero solo el Word")
+                elif self.pdf==True and self.word==False:
+                    docModeloQuipux.save(ruta_word)
+                    ruta_pdf = os.path.join(carpeta_seleccionada, "Modelo_Quipux.pdf")
+                    convert(ruta_word, ruta_pdf)
+                    os.remove(ruta_word)
+                    print("Solo Pdf generados")
+
+            if self.excel==True:
+                docExcelPago=self.generar_excel()
+                ruta_guardado = os.path.join(carpeta_seleccionada, "resultado.xlsx")
+                docExcelPago.save(ruta_guardado)
             valor=True
         return valor
 

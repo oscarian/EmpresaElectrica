@@ -23,7 +23,8 @@ def crear_tabla_contratos():
             costo_mensual REAL NOT NULL,
             localidad TEXT NOT NULL,
             provincia TEXT NOT NULL,
-            ficha TEXT NOT NULL
+            ficha TEXT NOT NULL,
+            anticipo TEXT NOT NULL
         )
     ''')
     conexion.commit()

@@ -19,7 +19,9 @@ def obtener_pantalla_contratistas(): #debo hacer validaciones
         localidad = ft.TextField(dense=True,label="Localidad",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
         provincia = ft.TextField(dense=True,label="Provincia",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
         ficha= ft.TextField(dense=True,label="Ficha Específica",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
+        anticipo= ft.TextField(dense=True,label="Anticipo",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
         
+
         dias = [str(d).zfill(2) for d in range(1, 32)]  # 01 - 31
         meses = {"Enero": "01", "Febrero": "02", "Marzo": "03", "Abril": "04", "Mayo": "05", "Junio": "06", "Julio": "07", "Agosto": "08","Septiembre": "09", "Octubre": "10", "Noviembre": "11", "Diciembre": "12"}
         anios = [str(a) for a in range(2000, 2031)]  # anios 2000 - 2030
@@ -27,24 +29,24 @@ def obtener_pantalla_contratistas(): #debo hacer validaciones
         # Crear Dropdowns con tamanio reducido
         dia_inicio = ft.Dropdown(options=[ft.dropdown.Option(d) for d in dias],width=50, height=35, text_size=12,hint_text="Día", border_radius=8, content_padding=ft.padding.symmetric(horizontal=5, vertical=2) )
         mes_inicio = ft.Dropdown( options=[ft.dropdown.Option(m) for m in meses.keys()], width=90, height=35, text_size=12,hint_text="Mes", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
-        anio_inicio= ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, height=35, text_size=12,hint_text="anio", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
+        anio_inicio= ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, height=35, text_size=12,hint_text="año", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
         
         dia_finalizacion  = ft.Dropdown(options=[ft.dropdown.Option(d) for d in dias],width=50, height=35, text_size=12,hint_text="Día", border_radius=8, content_padding=ft.padding.symmetric(horizontal=5, vertical=2) )
         mes_finalizacion  = ft.Dropdown( options=[ft.dropdown.Option(m) for m in meses.keys()], width=90, height=35, text_size=12,hint_text="Mes", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
-        anio_finalizacion = ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, height=35, text_size=12,hint_text="anio", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
+        anio_finalizacion = ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, height=35, text_size=12,hint_text="año", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
         #ME QUEDE AQU  DEBO AGREGAR LOS SELECT A LA INTERFAZ GRAFICA
         dia_emision = ft.Dropdown(options=[ft.dropdown.Option(d) for d in dias],width=50, height=35, text_size=12,hint_text="Día", border_radius=8, content_padding=ft.padding.symmetric(horizontal=5, vertical=2) )
         mes_emision = ft.Dropdown( options=[ft.dropdown.Option(m) for m in meses.keys()], width=90, height=35, text_size=12,hint_text="Mes", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
-        anio_emision= ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, height=35, text_size=12,hint_text="anio", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
+        anio_emision= ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, height=35, text_size=12,hint_text="año", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
         
         dia_suscripcion = ft.Dropdown(options=[ft.dropdown.Option(d) for d in dias],width=50, height=35, text_size=12,hint_text="Día", border_radius=8, content_padding=ft.padding.symmetric(horizontal=5, vertical=2) )
         mes_suscripcion = ft.Dropdown( options=[ft.dropdown.Option(m) for m in meses.keys()], width=90, height=35, text_size=12,hint_text="Mes", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
-        anio_suscripcion = ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, height=35, text_size=12,hint_text="anio", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
+        anio_suscripcion = ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, height=35, text_size=12,hint_text="año", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
         
         
             
         def limpiar():
-            ficha.value=orden.value = empresa.value = monto_contrato.value =  ruc.value = costo_mensual.value= provincia.value = localidad.value = ""
+            anticipo.value= ficha.value=orden.value = empresa.value = monto_contrato.value =  ruc.value = costo_mensual.value= provincia.value = localidad.value = ""
             dia_inicio.value = mes_inicio.value = anio_inicio.value= ""
             dia_finalizacion.value  = mes_finalizacion.value  = anio_finalizacion.value = ""
             dia_emision.value = mes_emision.value = anio_emision.value= ""
@@ -67,7 +69,6 @@ def obtener_pantalla_contratistas(): #debo hacer validaciones
 
         def agregar_contratista(e): #debo hacer validaciones
             if validar_formulario_contratista()==True:
-                print(fecha_inicio)
                 datos_contratista = {
                     'orden': orden.value,
                     'empresa': empresa.value,
@@ -80,7 +81,8 @@ def obtener_pantalla_contratistas(): #debo hacer validaciones
                     'costo_mensual': costo_mensual.value,
                     'localidad': localidad.value,
                     'provincia': provincia.value,
-                    'ficha':ficha.value
+                    'ficha':ficha.value,
+                    'anticipo':anticipo.value
                 }
 
                 controlador_contratista.agregar_contratista(datos_contratista)
@@ -178,11 +180,11 @@ def obtener_pantalla_contratistas(): #debo hacer validaciones
                                     provincia,
                                     monto_contrato,
                                     costo_mensual,
-                                    
                                 ]
                             ),
                         ]
                     ),
+                    anticipo,
                     ft.Container(
                         content=ft.Row(
                             alignment=ft.MainAxisAlignment.START,

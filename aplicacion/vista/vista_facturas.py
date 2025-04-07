@@ -31,7 +31,7 @@ def obtener_pantalla_facturas(): #debo hacer validaciones
         # Crear Dropdowns con tamanio reducido
         dia = ft.Dropdown(options=[ft.dropdown.Option(d) for d in dias],width=50, height=35, text_size=12,hint_text="Día", border_radius=8, content_padding=ft.padding.symmetric(horizontal=5, vertical=2) )
         mes = ft.Dropdown( options=[ft.dropdown.Option(m) for m in meses.keys()], width=90, height=35, text_size=12,hint_text="Mes", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
-        anio= ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, height=35, text_size=12,hint_text="anio", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
+        anio= ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, height=35, text_size=12,hint_text="año", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
         
         
         def limpiar():
