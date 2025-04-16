@@ -29,9 +29,9 @@ def obtener_pantalla_facturas(): #debo hacer validaciones
         anios = [str(a) for a in range(2000, 2031)]  # anios 2000 - 2030
 
         # Crear Dropdowns con tamanio reducido
-        dia = ft.Dropdown(options=[ft.dropdown.Option(d) for d in dias],width=50, height=35, text_size=12,hint_text="Día", border_radius=8, content_padding=ft.padding.symmetric(horizontal=5, vertical=2) )
-        mes = ft.Dropdown( options=[ft.dropdown.Option(m) for m in meses.keys()], width=90, height=35, text_size=12,hint_text="Mes", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
-        anio= ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, height=35, text_size=12,hint_text="año", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
+        dia = ft.Dropdown(options=[ft.dropdown.Option(d) for d in dias],width=50, text_size=12,hint_text="Día", border_radius=8, content_padding=ft.padding.symmetric(horizontal=5, vertical=2) )
+        mes = ft.Dropdown( options=[ft.dropdown.Option(m) for m in meses.keys()], width=90, text_size=12,hint_text="Mes", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
+        anio= ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, text_size=12,hint_text="año", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
         
         
         def limpiar():

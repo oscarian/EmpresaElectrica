@@ -27,21 +27,21 @@ def obtener_pantalla_contratistas(): #debo hacer validaciones
         anios = [str(a) for a in range(2000, 2031)]  # anios 2000 - 2030
 
         # Crear Dropdowns con tamanio reducido
-        dia_inicio = ft.Dropdown(options=[ft.dropdown.Option(d) for d in dias],width=50, height=35, text_size=12,hint_text="Día", border_radius=8, content_padding=ft.padding.symmetric(horizontal=5, vertical=2) )
-        mes_inicio = ft.Dropdown( options=[ft.dropdown.Option(m) for m in meses.keys()], width=90, height=35, text_size=12,hint_text="Mes", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
-        anio_inicio= ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, height=35, text_size=12,hint_text="año", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
+        dia_inicio = ft.Dropdown(options=[ft.dropdown.Option(d) for d in dias],width=50, text_size=12,hint_text="Día", border_radius=8, content_padding=ft.padding.symmetric(horizontal=5, vertical=2) )
+        mes_inicio = ft.Dropdown( options=[ft.dropdown.Option(m) for m in meses.keys()], width=90, text_size=12,hint_text="Mes", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
+        anio_inicio= ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, text_size=12,hint_text="año", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
         
-        dia_finalizacion  = ft.Dropdown(options=[ft.dropdown.Option(d) for d in dias],width=50, height=35, text_size=12,hint_text="Día", border_radius=8, content_padding=ft.padding.symmetric(horizontal=5, vertical=2) )
-        mes_finalizacion  = ft.Dropdown( options=[ft.dropdown.Option(m) for m in meses.keys()], width=90, height=35, text_size=12,hint_text="Mes", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
-        anio_finalizacion = ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, height=35, text_size=12,hint_text="año", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
+        dia_finalizacion  = ft.Dropdown(options=[ft.dropdown.Option(d) for d in dias],width=50, text_size=12,hint_text="Día", border_radius=8, content_padding=ft.padding.symmetric(horizontal=5, vertical=2) )
+        mes_finalizacion  = ft.Dropdown( options=[ft.dropdown.Option(m) for m in meses.keys()], width=90, text_size=12,hint_text="Mes", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
+        anio_finalizacion = ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, text_size=12,hint_text="año", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
         #ME QUEDE AQU  DEBO AGREGAR LOS SELECT A LA INTERFAZ GRAFICA
-        dia_emision = ft.Dropdown(options=[ft.dropdown.Option(d) for d in dias],width=50, height=35, text_size=12,hint_text="Día", border_radius=8, content_padding=ft.padding.symmetric(horizontal=5, vertical=2) )
-        mes_emision = ft.Dropdown( options=[ft.dropdown.Option(m) for m in meses.keys()], width=90, height=35, text_size=12,hint_text="Mes", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
-        anio_emision= ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, height=35, text_size=12,hint_text="año", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
+        dia_emision = ft.Dropdown(options=[ft.dropdown.Option(d) for d in dias],width=50, text_size=12,hint_text="Día", border_radius=8, content_padding=ft.padding.symmetric(horizontal=5, vertical=2) )
+        mes_emision = ft.Dropdown( options=[ft.dropdown.Option(m) for m in meses.keys()], width=90, text_size=12,hint_text="Mes", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
+        anio_emision= ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, text_size=12,hint_text="año", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
         
-        dia_suscripcion = ft.Dropdown(options=[ft.dropdown.Option(d) for d in dias],width=50, height=35, text_size=12,hint_text="Día", border_radius=8, content_padding=ft.padding.symmetric(horizontal=5, vertical=2) )
-        mes_suscripcion = ft.Dropdown( options=[ft.dropdown.Option(m) for m in meses.keys()], width=90, height=35, text_size=12,hint_text="Mes", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
-        anio_suscripcion = ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, height=35, text_size=12,hint_text="año", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
+        dia_suscripcion = ft.Dropdown(options=[ft.dropdown.Option(d) for d in dias],width=50, text_size=12,hint_text="Día", border_radius=8, content_padding=ft.padding.symmetric(horizontal=5, vertical=2) )
+        mes_suscripcion = ft.Dropdown( options=[ft.dropdown.Option(m) for m in meses.keys()], width=90, text_size=12,hint_text="Mes", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
+        anio_suscripcion = ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, text_size=12,hint_text="año", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
         
         
             
