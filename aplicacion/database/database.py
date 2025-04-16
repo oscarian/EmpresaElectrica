@@ -10,7 +10,7 @@ def crear_tabla_contratos():
     conexion = crear_conexion()
     cursor = conexion.cursor()
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS contratos (
+        CREATE TABLE IF NOT EXISTS contratistas (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             orden TEXT NOT NULL,
             empresa TEXT NOT NULL,
