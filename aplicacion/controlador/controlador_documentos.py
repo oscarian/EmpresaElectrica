@@ -105,7 +105,10 @@ class Generar_Docs:
 
         # Obtener el número del mes de pago
         mes_pago_num = meses.get(self.factura[4])
-
+        print("FACTURA:")
+        print(self.factura)
+        print("mes pago:"+str(mes_pago_num))
+        print("mes inicio :"+str(mes_inicio))
         
         numero_planilla = (mes_pago_num - mes_inicio + 12) % 12 + 1
 
