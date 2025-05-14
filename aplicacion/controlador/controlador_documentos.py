@@ -91,7 +91,7 @@ class Generar_Docs:
         return fecha_texto
 
     def obtener_planilla(self):
-        # Diccionario de meses con su número correspondiente
+        # Diccionario de meses con su número correspondiente (hay que desarrollar para más meses el contrato, surgira el mes 13 Enero)
         meses = {
             "Enero": 1, "Febrero": 2, "Marzo": 3, "Abril": 4, "Mayo": 5, "Junio": 6,
             "Julio": 7, "Agosto": 8, "Septiembre": 9, "Octubre": 10, "Noviembre": 11, "Diciembre": 12
@@ -136,7 +136,8 @@ class Generar_Docs:
             'costo_mensual': self.contratista[9],
             'fecha_inicio': self.fecha_a_texto("f2",self.contratista[4]),
             'ruc': self.contratista[8],
-            'ficha':self.contratista[12]
+            'ficha':self.contratista[12],
+            'periodo_pago': f"del 01 al {int(self.factura[6]):02d} de {self.factura[4]} del {self.factura[5]}",
         }
         docActaEntrega.render(contenido)
         return docActaEntrega
@@ -157,7 +158,8 @@ class Generar_Docs:
             'monto_contrato': self.contratista[3],
             'costo_mensual': self.contratista[9],
             'fecha_inicio': self.fecha_a_texto("f2",self.contratista[4]),
-            'ficha':self.contratista[12]
+            'ficha':self.contratista[12],
+            'provincia':self.contratista[11],
         }
         documento.render(contenido)
         return documento
@@ -165,14 +167,15 @@ class Generar_Docs:
     def generar_modelo_quipux(self):
         documento = DocxTemplate("aplicacion\plantillas\Modelo Quipux.docx")
         contenido = {
-            'costo_mensual_a_texto':self.cifra_a_texto(self.contratista[9]),
+            'costo_mensual_a_texto':self.cifra_a_texto(self.factura[7]),
             'administrador':self.administrador,
             'localidades':self.contratista[10],
             'orden': self.contratista[1],
             'empresa': self.contratista[2],
             'mes_pago': self.factura[4],
             'anio_pago':self.factura[5],
-            'costo_mensual': self.contratista[9],
+            'costo_mensual': self.factura[7],
+            'provincia':self.contratista[11],
             
         }
         documento.render(contenido)
@@ -271,7 +274,20 @@ class Generar_Docs:
         hojaPpago["G35"]=math.trunc((float(hojaPpago["G33"].value)+float(hojaPpago["G34"].value))*100)/100          #Total factura
 
         #-----------------DESCUENTOS --------------------
-        hojaPpago["F38"]=math.trunc((float(hojaPpago["E21"].value)*0.1)*100)/100                       #Anticipo 10%
+        # --CAmbio esta linea de codigo--hojaPpago["F38"]=math.trunc((float(hojaPpago["E21"].value)*0.1)*100)/100
+             
+        try:
+            anticipo_entregado = float(self.contratista[13])  # valor entregado como anticipo
+            valor_contrato = float(self.contratista[3])       #monto del contrato
+            valor_anticipo = float(self.contratista[13])
+            if anticipo_entregado > 0 and valor_contrato > 0:
+                porcentaje_anticipo = anticipo_entregado / valor_contrato
+            else:
+                porcentaje_anticipo = 0.0
+        except (TypeError, ValueError):
+            porcentaje_anticipo = 0.0
+        hojaPpago["F49"]= valor_anticipo
+        hojaPpago["F38"] = math.trunc((float(hojaPpago["E21"].value) * porcentaje_anticipo) * 100) / 100                       #Anticipo 10%
         hojaPpago["F39"]=math.trunc((float(hojaPpago["G33"].value)*0.0275)*100)/100                    #Impuesto a la renta 2.75%
         hojaPpago["F40"]=math.trunc((float(hojaPpago["G34"].value)*0.7)*100)/100                      #Retencion al Iva 70%
         hojaPpago["F41"]=0.0  #Multas
@@ -294,7 +310,9 @@ class Generar_Docs:
         hojaMulta["A8"] = "ANÁLISIS DE MULTAS PARA EL" \
         " SEERVICIO DE LIMPIEZA TIPO III, DE ACUERDO A LA ORDEN DE COMPRA: "+self.contratista[1]
 
-        hojaMulta["C13"] = self.fecha_a_texto("f2",self.contratista[4])
+        fecha_inicio_mes = f"01-{self.obtener_fecha_fin_mes(self.factura[4], self.factura[5])[3:]}"
+        hojaMulta["C13"] = self.fecha_a_texto("f2", fecha_inicio_mes)
+        #hojaMulta["C13"] = self.fecha_a_texto("f2",self.contratista[4])
         hojaMulta["C14"] = self.fecha_a_texto("f2",self.obtener_fecha_fin_mes(self.factura[4],self.factura[5]))
         hojaMulta["C15"] = self.fecha_a_texto("f2",self.obtener_fecha_fin_mes(self.factura[4],self.factura[5]))
         hojaMulta["C16"]=  str(self.factura[8])+" días"
@@ -319,13 +337,13 @@ class Generar_Docs:
         #-----------------Valor ejecutado hasta la fecha --------------------
         factura_anterior=self.obtener_factura_anterior()
         if factura_anterior==None:
-            hojaEstado["F24"]=str(self.factura[7])+"  Eval."              #valor ejecutado hasta la fecha
+            hojaEstado["F24"]=str(self.factura[7])              #valor ejecutado hasta la fecha
             hojaEstado["G24"]= str(math.trunc(float((self.factura[7]/self.contratista[3])*100)*100)/100)+"%"   #porcentaje
             hojaEstado["F25"]=math.trunc((0*100))/100                            #valor ejecutado en el estado anterior
             hojaEstado["G26"]=self.factura[7]              #valor de la presente planilla
             hojaEstado["G27"]=math.trunc((self.factura[7]*0.15)*100)/100   #iva 15%
             hojaEstado["G28"]=math.trunc((float(hojaPpago["G33"].value)+float(hojaPpago["G34"].value))*100)/100 #valor total
-            hojaEstado["F31"]=math.trunc((float(hojaPpago["E21"].value)*0.1)*100)/100   #retenido
+            hojaEstado["F31"]=hojaPpago["F38"].value   #retenido
             hojaEstado["F34"]=hojaPpago["F38"].value   #anticipo total
             hojaEstado["F35"]=hojaPpago["F39"].value   #impuesto a la renta
             hojaEstado["F36"]=hojaPpago["F40"].value    #retencion iva
@@ -333,7 +351,8 @@ class Generar_Docs:
             hojaEstado["G39"]=hojaPpago["G43"].value    #total retencones
             hojaEstado["G40"]=hojaPpago["G47"].value    #valor liquido
             #cuadro de devoluciones de anticipos
-            hojaEstado["F43"]= math.trunc((self.contratista[3]*0.1)*100)/100    #anticipo entregado
+            # hojaEstado["F43"]= math.trunc((self.contratista[3]*0.1)*100)/100    #anticipo entregado
+            hojaEstado["F43"]= self.contratista[13]                         #anticipo entregado
             hojaEstado["F44"]=hojaEstado["F31"].value                           #anticipos en la presente planilla
             hojaEstado["F45"]=math.trunc((0)*100)/100                           #anticipos en la planilla anterior
             hojaEstado["F46"]=hojaEstado["F44"].value                           #anticipo toal a la fecha
@@ -347,18 +366,22 @@ class Generar_Docs:
             hojaEstado["G27"]=math.trunc((self.factura[7]*0.15)*100)/100   #iva 15%
             hojaEstado["G28"]=math.trunc((float(hojaPpago["G33"].value)+float(hojaPpago["G34"].value))*100)/100 #valor total
             #amortizacion de anticipo
-            hojaEstado["F31"]=math.trunc((float(hojaPpago["E21"].value)*0.1)*100)/100   #retenido
+            hojaEstado["F31"]=math.trunc(float(hojaPpago["E21"].value) * porcentaje_anticipo * 100) / 100   #retenido
             hojaEstado["F34"]=hojaPpago["F38"].value   #anticipo total
             hojaEstado["F35"]=hojaPpago["F39"].value   #impuesto a la renta
             hojaEstado["F36"]=hojaPpago["F40"].value    #retencion iva
             hojaEstado["F37"]=hojaPpago["F41"].value   #multas
             hojaEstado["G39"]=hojaPpago["G43"].value    #total retencones
             hojaEstado["G40"]=hojaPpago["G47"].value    #valor liquido
-            #cuadro de devoluciones de anticipos
-            hojaEstado["F43"]= math.trunc((self.contratista[3]*0.1)*100)/100    #anticipo entregado
+            #cuadro de devoluciones danticipo_entregadoe anticipos
+            
+            nro_planilla = int(self.obtener_planilla())  # transformar numero de planilla de str a floar
+            valor_anticipo_mensual = float(hojaEstado["F31"].value)  #valor mensual amortizado en float para texto
+            valor_amortizado = (nro_planilla - 1) * valor_anticipo_mensual #valor amortizado hasta la planilla anterior
+            hojaEstado["F43"]=  anticipo_entregado #anticipo entregado
             hojaEstado["F44"]=hojaEstado["F31"].value                           #anticipos en la presente planilla
-            hojaEstado["F45"]="Hay que evaluar"                          #anticipos en la planilla anterior
-            hojaEstado["F46"]="Hay que evaluar"                          #anticipo toal a la fecha
+            hojaEstado["F45"]=math.trunc(valor_amortizado)                           #anticipos en la planilla anterior
+            hojaEstado["F46"]=hojaEstado["F31"].value+hojaEstado["F45"].value                          #anticipo toal a la fecha
             hojaEstado["F48"]=hojaEstado["G40"].value                                 #saldo total a cancelar
 
 

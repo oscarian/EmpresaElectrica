@@ -24,7 +24,7 @@ def obtener_pantalla_contratistas(): #debo hacer validaciones
 
         dias = [str(d).zfill(2) for d in range(1, 32)]  # 01 - 31
         meses = {"Enero": "01", "Febrero": "02", "Marzo": "03", "Abril": "04", "Mayo": "05", "Junio": "06", "Julio": "07", "Agosto": "08","Septiembre": "09", "Octubre": "10", "Noviembre": "11", "Diciembre": "12"}
-        anios = [str(a) for a in range(2000, 2031)]  # anios 2000 - 2030
+        anios = [str(a) for a in range(2020, 2030)]  # anios 2000 - 2030
 
         # Crear Dropdowns con tamanio reducido
         dia_inicio = ft.Dropdown(options=[ft.dropdown.Option(d) for d in dias],width=50, text_size=12,hint_text="Día", border_radius=8, content_padding=ft.padding.symmetric(horizontal=5, vertical=2) )
@@ -110,9 +110,9 @@ def obtener_pantalla_contratistas(): #debo hacer validaciones
                             columns=[
                                 #ft.DataColumn(ft.Text("Id Contratista", color=ft.colors.BLUE_800, weight = "bold")),
                                 #ft.DataColumn(ft.Text("Orden", color=ft.colors.BLUE_800, weight = "bold")),
-                                ft.DataColumn(ft.Text("Empresa", color=ft.colors.BLUE_800, weight = "bold")),
-                                ft.DataColumn(ft.Text("Monto Total", color=ft.colors.BLUE_800, weight = "bold"), numeric=True),
-                                ft.DataColumn(ft.Text("Costo Mensual", color=ft.colors.BLUE_800, weight = "bold"), numeric=True ),
+                                ft.DataColumn(ft.Text("Empresa", color=ft.colors.BLACK, weight = "bold")),
+                                ft.DataColumn(ft.Text("Monto Total", color=ft.colors.BLACK, weight = "bold"), numeric=True),
+                                ft.DataColumn(ft.Text("Costo Mensual", color=ft.colors.BLACK, weight = "bold"), numeric=True ),
                             ],
                         )        
         

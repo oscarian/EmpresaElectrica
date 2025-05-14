@@ -24,7 +24,7 @@ def crear_tabla_contratos():
             localidad TEXT NOT NULL,
             provincia TEXT NOT NULL,
             ficha TEXT NOT NULL,
-            anticipo TEXT NOT NULL
+            anticipo REAL NOT NULL
         )
     ''')
     conexion.commit()

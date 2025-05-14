@@ -14,6 +14,6 @@ def main(page: ft.Page):
     controlador = Controlador_Principal(page)
     controlador.mostrar_vista()
 
+ 
 
-
-ft.app(target=main)
+ft.app(target=main) 
