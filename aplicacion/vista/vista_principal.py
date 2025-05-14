@@ -3,7 +3,6 @@ from vista import vista_contratistas
 from vista import vista_facturas
 from vista import vista_informes
 
-
 class Vista_Principal:
     def __init__(self, page):
         self.page = page  # Aquí agregamos la página
