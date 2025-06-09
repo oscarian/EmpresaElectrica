@@ -6,33 +6,36 @@ datos_contratista={}
 fecha = ""
 def obtener_pantalla_facturas(): #debo hacer validaciones
         
-        nro_factura = ft.TextField(dense=True,label="Número de Factura",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
+        nro_factura = ft.TextField(dense=True,label="Número de Factura",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50,color=ft.Colors.BLACK)
         #fecha = ft.TextField(dense=True,label="Fecha",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
-        mes_pago=ft.TextField(dense=True,label="Mes de Pago",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
-        anio_pago=ft.TextField(dense=True,label="Año de Pago",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
-        nro_dias = ft.TextField(dense=True,label="Número de días",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
-        valor_factura = ft.TextField(dense=True,label="Valor de la factura",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
-        dias_multa=ft.TextField(dense=True,label="Días de Multa",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
+        mes_pago=ft.TextField(dense=True,label="Mes de Pago",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50,color=ft.Colors.BLACK)
+        anio_pago=ft.TextField(dense=True,label="Año de Pago",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50,color=ft.Colors.BLACK)
+        nro_dias = ft.TextField(dense=True,label="Número de días",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50,color=ft.Colors.BLACK)
+        valor_factura = ft.TextField(dense=True,label="Valor de la factura",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50,color=ft.Colors.BLACK)
+        dias_multa=ft.TextField(dense=True,label="Días de Multa",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50,color=ft.Colors.BLACK)
         
         contratos = controlador_contratista.obtener_contratistas()
         def dropdown_changed(e):
             t.value = f"{dropdown_factura.value}"
         t=ft.Text() 
 
-        dropdown_factura =ft.Dropdown(on_change=dropdown_changed, label="Contratista", hint_text="Escoja un contratista", autofocus=True)
+        dropdown_factura =ft.Dropdown(on_change=dropdown_changed, label="Contratista", hint_text="Escoja un contratista", autofocus=True,color=ft.Colors.BLACK)
         dropdown_factura.options.clear
         for contrato in contratos:
                 dropdown_factura.options.append(ft.dropdown.Option(contrato[2]))
         
         dias = [str(d).zfill(2) for d in range(1, 32)]  # 01 - 31
         meses = {"Enero": "01", "Febrero": "02", "Marzo": "03", "Abril": "04", "Mayo": "05", "Junio": "06", "Julio": "07", "Agosto": "08","Septiembre": "09", "Octubre": "10", "Noviembre": "11", "Diciembre": "12"}
-        anios = [str(a) for a in range(2000, 2031)]  # anios 2000 - 2030
+        anios = [str(a) for a in range(2025, 2030)]  # anios 2000 - 2030
 
         # Crear Dropdowns con tamanio reducido
-        dia = ft.Dropdown(options=[ft.dropdown.Option(d) for d in dias],width=50, text_size=12,hint_text="Día", border_radius=8, content_padding=ft.padding.symmetric(horizontal=5, vertical=2) )
-        mes = ft.Dropdown( options=[ft.dropdown.Option(m) for m in meses.keys()], width=90, text_size=12,hint_text="Mes", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
-        anio= ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=70, text_size=12,hint_text="año", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
+        dia = ft.Dropdown(options=[ft.dropdown.Option(d) for d in dias],width=80, text_size=12,hint_text="Día", border_radius=8, content_padding=ft.padding.symmetric(horizontal=5, vertical=2) )
+        mes = ft.Dropdown( options=[ft.dropdown.Option(m) for m in meses.keys()], width=120, text_size=12,hint_text="Mes", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
+        anio= ft.Dropdown(options=[ft.dropdown.Option(a) for a in anios],width=80, text_size=12,hint_text="año", border_radius=8,content_padding=ft.padding.symmetric(horizontal=5, vertical=2))
         
+
+        dia_inicial = ft.Dropdown(options=[ft.dropdown.Option(d) for d in dias],width=80, text_size=12,hint_text="Día", border_radius=8, content_padding=ft.padding.symmetric(horizontal=5, vertical=2) )
+        dia_final = ft.Dropdown(options=[ft.dropdown.Option(d) for d in dias],width=80, text_size=12,hint_text="Día", border_radius=8, content_padding=ft.padding.symmetric(horizontal=5, vertical=2) )
         
         def limpiar():
              dias_multa.value=  nro_factura.value  = mes_pago.value=dias_multa.value= anio_pago.value = nro_dias.value  = ""
@@ -78,7 +81,7 @@ def obtener_pantalla_facturas(): #debo hacer validaciones
                                 ft.DataColumn(ft.Text("Mes de Pago", color=ft.colors.BLUE_800, weight = "bold")),
                                 ft.DataColumn(ft.Text("Año de Pago", color=ft.colors.BLUE_800, weight = "bold"), numeric=True),
                                 ft.DataColumn(ft.Text("Valor", color=ft.colors.BLUE_800, weight = "bold"), numeric=True ),
-                            ],
+                            ],data_text_style=ft.TextStyle(color=ft.colors.BLACK),
                         )        
         
        
@@ -129,6 +132,8 @@ def obtener_pantalla_facturas(): #debo hacer validaciones
                     'nro_dias':nro_dias.value,
                     'valor_factura':valor_factura.value,
                     'dias_multa':dias_multa.value,
+                    'dia_inicial':dia_inicial.value,
+                    'dia_final':dia_final.value,
                 }
                 controlador_factura.agregar_factura(datos_contratista)
                 limpiar()
@@ -160,6 +165,13 @@ def obtener_pantalla_facturas(): #debo hacer validaciones
                     mes_pago,
                     anio_pago,
                     nro_dias,
+                    ft.Container(
+                        content=ft.Row(
+                            alignment=ft.MainAxisAlignment.START,
+                            controls=[
+                                ft.Text("Periodo desde:  ",weight=ft.FontWeight.BOLD),dia_inicial, dia_final]
+                        )
+                    ),
                     valor_factura,
                     dias_multa,
                     ft.Container(

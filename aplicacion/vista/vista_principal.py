@@ -2,6 +2,7 @@ import flet as ft
 from vista import vista_contratistas
 from vista import vista_facturas
 from vista import vista_informes
+from vista import vista_localidades
 
 class Vista_Principal:
     def __init__(self, page):
@@ -17,12 +18,15 @@ class Vista_Principal:
                 tab2.content=vista_facturas.obtener_pantalla_facturas()
             if tabs.selected_index==2:
                 tab3.content=vista_informes.obtener_pantalla_informes()
+            if tabs.selected_index == 3:
+                tab4.content = vista_localidades.obtener_pantalla_localidades()    
             tabs.update()
 
         # Definir tabs con contenido inicial
         tab1 = ft.Tab(text="Contratistas",icon=ft.icons.PERSON,content=vista_contratistas.obtener_pantalla_contratistas())
-        tab2 = ft.Tab(text="Facturas",icon=ft.icons.PERSON,content=vista_facturas.obtener_pantalla_facturas())
-        tab3 = ft.Tab(text="Informes",icon=ft.icons.PERSON,content=vista_informes.obtener_pantalla_informes())
+        tab2 = ft.Tab(text="Facturas",icon=ft.icons.DOCUMENT_SCANNER,content=vista_facturas.obtener_pantalla_facturas())
+        tab3 = ft.Tab(text="Informes",icon=ft.icons.SCHEDULE,content=vista_informes.obtener_pantalla_informes())
+        tab4 = ft.Tab(text="Localidades",icon=ft.icons.LOCATION_CITY,content=vista_localidades.obtener_pantalla_localidades())
 
         # Tabs principal
         tabs = ft.Tabs(
@@ -32,7 +36,7 @@ class Vista_Principal:
             expand=1,
             label_color=ft.colors.BLUE_800,
             unselected_label_color=ft.colors.BLUE_200,
-            tabs=[tab1, tab2,tab3]
+            tabs=[tab1, tab2, tab3, tab4]
         )
 
         # Botón para cambiar el contenido de la pestaña 2

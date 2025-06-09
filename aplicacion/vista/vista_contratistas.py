@@ -10,16 +10,16 @@ fecha_suscripcion = ""
 
 def obtener_pantalla_contratistas(): #debo hacer validaciones
             
-        orden = ft.TextField(dense=True,label="Orden", border_color= ft.Colors.GREY_100,bgcolor=ft.Colors.GREY_50)
-        empresa = ft.TextField(dense=True,label="Empresa",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
-        monto_contrato = ft.TextField(dense=True,label="Monto Contrato",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
+        orden = ft.TextField(dense=True,label="Orden" ,color=ft.Colors.BLACK,border_color= ft.Colors.GREY_100,bgcolor=ft.Colors.GREY_50)
+        empresa = ft.TextField(dense=True,label="Empresa",color=ft.Colors.BLACK,border_color= ft.Colors.GREY_100,bgcolor=ft.Colors.GREY_50)
+        monto_contrato = ft.TextField(dense=True,color=ft.Colors.BLACK,label="Monto Contrato",border_color= ft.Colors.GREY_100,bgcolor=ft.Colors.GREY_50)
         
-        ruc = ft.TextField(dense=True,label="RUC",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
-        costo_mensual = ft.TextField(dense=True,label="Costo Mensual",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
-        localidad = ft.TextField(dense=True,label="Localidad",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
-        provincia = ft.TextField(dense=True,label="Provincia",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
-        ficha= ft.TextField(dense=True,label="Ficha Específica",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
-        anticipo= ft.TextField(dense=True,label="Anticipo",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
+        ruc = ft.TextField(dense=True,label="RUC",color=ft.Colors.BLACK,border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
+        costo_mensual = ft.TextField(dense=True,label="Costo Mensual",color=ft.Colors.BLACK,border_color= ft.Colors.GREY_100,bgcolor=ft.Colors.GREY_50)
+        localidad = ft.TextField(dense=True,label="Localidad",color=ft.Colors.BLACK,border_color= ft.Colors.GREY_100,bgcolor=ft.Colors.GREY_50)
+        provincia = ft.TextField(dense=True,label="Provincia",color=ft.Colors.BLACK,border_color= ft.Colors.GREY_100,bgcolor=ft.Colors.GREY_50)
+        ficha= ft.TextField(dense=True,label="Ficha Específica",color=ft.Colors.BLACK,border_color= ft.Colors.GREY_100,bgcolor=ft.Colors.GREY_50)
+        anticipo= ft.TextField(dense=True,label="Anticipo",color=ft.Colors.BLACK,border_color= ft.Colors.GREY_100,bgcolor=ft.Colors.GREY_50)
         
 
         dias = [str(d).zfill(2) for d in range(1, 32)]  # 01 - 31
@@ -96,24 +96,24 @@ def obtener_pantalla_contratistas(): #debo hacer validaciones
                             suffix_icon = ft.icons.SEARCH,
                             label= "Buscar por el nombre",
                             border= ft.InputBorder.UNDERLINE,
-                            border_color= ft.colors.BLUE_800,
-                            label_style = ft.TextStyle(color= ft.colors.BLUE_800),
+                            border_color= ft.Colors.BLUE_800,
+                            label_style = ft.TextStyle(color= ft.Colors.BLUE_800),
                             ###on_change = searh_data,
                         )     
       
         tabla_datos =  ft.DataTable(
                             expand= True,
-                            border=ft.border.all(2, "ft.colors.BLUE_800"),
+                            border=ft.border.all(2, "ft.Colors.BLUE_800"),
                             #data_row_color = { ft.MaterialState.SELECTED: ft.colors.BLUE_800, ft.MaterialState.PRESSED: "black"},
                             border_radius=10,
                             show_checkbox_column = True,
                             columns=[
                                 #ft.DataColumn(ft.Text("Id Contratista", color=ft.colors.BLUE_800, weight = "bold")),
                                 #ft.DataColumn(ft.Text("Orden", color=ft.colors.BLUE_800, weight = "bold")),
-                                ft.DataColumn(ft.Text("Empresa", color=ft.colors.BLACK, weight = "bold")),
-                                ft.DataColumn(ft.Text("Monto Total", color=ft.colors.BLACK, weight = "bold"), numeric=True),
-                                ft.DataColumn(ft.Text("Costo Mensual", color=ft.colors.BLACK, weight = "bold"), numeric=True ),
-                            ],
+                                ft.DataColumn(ft.Text("Empresa", color=ft.Colors.BLUE, weight = "bold")),
+                                ft.DataColumn(ft.Text("Monto Total", color=ft.Colors.BLUE, weight = "bold"), numeric=True),
+                                ft.DataColumn(ft.Text("Costo Mensual", color=ft.Colors.BLUE, weight = "bold"), numeric=True ),
+                            ],data_text_style=ft.TextStyle(color=ft.Colors.BLACK),
                         )        
         
        
@@ -142,7 +142,7 @@ def obtener_pantalla_contratistas(): #debo hacer validaciones
         show_data()
         
         formulario = ft.Container(
-            bgcolor=ft.colors.WHITE,
+            bgcolor=ft.Colors.WHITE,
             border_radius=0,
             col=4,
             padding=ft.padding.all(10),
@@ -236,27 +236,27 @@ def obtener_pantalla_contratistas(): #debo hacer validaciones
                                     text="Guardar",
                                     icon=ft.icons.SAVE,
                                     icon_color="white",
-                                    style=ft.ButtonStyle(color="white",bgcolor=ft.colors.BLUE_700,),
+                                    style=ft.ButtonStyle(color="white",bgcolor=ft.Colors.BLUE_700,),
                                     animate_scale=ft.Animation(300, ft.AnimationCurve.BOUNCE_OUT),  # Animación al hacer clic
-                                    on_hover=lambda e: (setattr(e.control, "style", ft.ButtonStyle(color="white",bgcolor=ft.colors.BLUE_900 if e.data == "true" else ft.colors.BLUE_800)),e.control.update()),
+                                    on_hover=lambda e: (setattr(e.control, "style", ft.ButtonStyle(color="white",bgcolor=ft.Colors.BLUE_900 if e.data == "true" else ft.colors.BLUE_800)),e.control.update()),
                                     on_click=agregar_contratista,
                                 ),
                                 ft.ElevatedButton(
                                     text="Actualizar",
                                     icon=ft.icons.UPDATE,
                                     icon_color="white",
-                                    style=ft.ButtonStyle(color="white",bgcolor=ft.colors.BLUE_700,),
+                                    style=ft.ButtonStyle(color="white",bgcolor=ft.Colors.BLUE_700,),
                                     animate_scale=ft.Animation(300, ft.AnimationCurve.BOUNCE_OUT),  # Animación al hacer clic
-                                    on_hover=lambda e: (setattr(e.control, "style", ft.ButtonStyle(color="white",bgcolor=ft.colors.BLUE_900 if e.data == "true" else ft.colors.BLUE_800)),e.control.update()),
+                                    on_hover=lambda e: (setattr(e.control, "style", ft.ButtonStyle(color="white",bgcolor=ft.Colors.BLUE_900 if e.data == "true" else ft.colors.BLUE_800)),e.control.update()),
                                     # on_click=update_data,
                                 ),
                                 ft.ElevatedButton(
                                     text="Borrar",
                                     icon=ft.icons.DELETE,
                                     icon_color="white",
-                                    style=ft.ButtonStyle(color="white",bgcolor=ft.colors.BLUE_700,),
+                                    style=ft.ButtonStyle(color="white",bgcolor=ft.Colors.BLUE_700,),
                                     animate_scale=ft.Animation(300, ft.AnimationCurve.BOUNCE_OUT),  # Animación al hacer clic
-                                    on_hover=lambda e: (setattr(e.control, "style", ft.ButtonStyle(color="white",bgcolor=ft.colors.BLUE_900 if e.data == "true" else ft.colors.BLUE_800)),e.control.update()),
+                                    on_hover=lambda e: (setattr(e.control, "style", ft.ButtonStyle(color="white",bgcolor=ft.Colors.BLUE_900 if e.data == "true" else ft.colors.BLUE_800)),e.control.update()),
                                     # on_click=delete_data,
                                 ),
                             ]

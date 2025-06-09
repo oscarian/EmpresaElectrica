@@ -113,10 +113,10 @@ def obtener_pantalla_informes(): #debo hacer validaciones
             text="Generar",
             icon=ft.icons.ADD_CIRCLE,
             icon_color="white",
-            style=ft.ButtonStyle(color="white",bgcolor=ft.colors.BLUE_700,),
+            style=ft.ButtonStyle(color="white",bgcolor=ft.Colors.BLUE_700,),
             on_click=generar_informes,
             animate_scale=ft.Animation(300, ft.AnimationCurve.BOUNCE_OUT),  # Animación al hacer clic
-            on_hover=lambda e: (setattr(e.control, "style", ft.ButtonStyle(color="white",bgcolor=ft.colors.BLUE_900 if e.data == "true" else ft.colors.BLUE_800)),e.control.update()),
+            on_hover=lambda e: (setattr(e.control, "style", ft.ButtonStyle(color="white",bgcolor=ft.Colors.BLUE_900 if e.data == "true" else ft.Colors.BLUE_800)),e.control.update()),
         )
 
         formulario = ft.Container(
@@ -130,12 +130,12 @@ def obtener_pantalla_informes(): #debo hacer validaciones
                     administrador,
                     dropdown_contratista,
                     dropdown_factura,
-                    ft.Divider(color=ft.Colors.LIGHT_BLUE, thickness=2),
+                    ft.Divider(color=ft.Colors.BLACK12, thickness=2),
                     ft.Row(controls=[ft.Text("Seleccione los documentos a generar:"),]),
                     ft.Row(
                         controls=[c1, c2, c3],
                     ),
-                    ft.Divider(color=ft.Colors.LIGHT_BLUE, thickness=2),
+                    ft.Divider(color=ft.Colors.BLACK, thickness=2),
                     ft.Row(controls=[ft.Text("Seleccione el formato:"),]),
                     ft.Row(
                         vertical_alignment=ft.CrossAxisAlignment.CENTER,
@@ -157,4 +157,11 @@ def obtener_pantalla_informes(): #debo hacer validaciones
             ]
         )
 
-        return ft.Container(conent) 
+        return ft.Container(
+                        ft.Column(
+                controls=[
+                    ft.Text("Gestión de Informes", size=24, weight="bold", color=ft.colors.BLUE_800),
+                    conent
+                ]
+            )
+        ) 

@@ -44,6 +44,8 @@ def crear_tabla_facturas():
             nro_dias INTEGER NOT NULL,
             valor_factura REAL NOT NULL,
             dias_multa INTEGER NOT NULL,
+            dia_inicial INTEGER NOT NULL,
+            dia_final INTEGER NOT NULL,       
             FOREIGN KEY (id_contratista) REFERENCES contratistas(id)
         )
     ''')

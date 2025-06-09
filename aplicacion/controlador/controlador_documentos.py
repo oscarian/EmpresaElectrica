@@ -5,9 +5,11 @@ from tkinter import filedialog
 from num2words import num2words
 from docx2pdf import convert
 import os
+import win32com.client
 import openpyxl
 import math
 import calendar
+import win32com.client
 
 
 
@@ -120,24 +122,24 @@ class Generar_Docs:
         docActaEntrega = DocxTemplate("aplicacion\plantillas\ACTA DE ENTREGA RECEPCIÓN PARCIAL.docx")
         contenido = {
             'monto_contrato_a_texto':self.cifra_a_texto(self.contratista[3]),
-            'costo_mensual_a_texto':self.cifra_a_texto(self.contratista[9]),
+            'costo_mensual_a_texto':self.cifra_a_texto(self.factura[7]),
             'nro_planilla':self.obtener_planilla(),
             'administrador':self.administrador,
             'fecha_hoy': self.fecha_a_texto("f1",datetime.today().strftime('%d-%m-%Y')),
             'provincia':self.contratista[11],
             'localidades':self.contratista[10],
             'nro_factura':self.factura[2],
-            'orden': self.contratista[1],
+            'orden': self.contratista[1].replace('\n', '').strip(),
             'fecha': self.factura[3],
-            'empresa': self.contratista[2],
+            'empresa': self.contratista[2].replace('\n', '').strip(),
             'mes_pago': self.factura[4],
             'anio_pago':self.factura[5],
             'monto_contrato': self.contratista[3],
-            'costo_mensual': self.contratista[9],
+            'costo_mensual': self.factura[7],
             'fecha_inicio': self.fecha_a_texto("f2",self.contratista[4]),
-            'ruc': self.contratista[8],
+            'ruc': self.contratista[8].replace('\n', '').strip(),
             'ficha':self.contratista[12],
-            'periodo_pago': f"del 01 al {int(self.factura[6]):02d} de {self.factura[4]} del {self.factura[5]}",
+            'periodo_pago': f"del {int(self.factura[9]):02d} al {int(self.factura[10]):02d} de {self.factura[4]} del {self.factura[5]}",
         }
         docActaEntrega.render(contenido)
         return docActaEntrega
@@ -232,9 +234,74 @@ class Generar_Docs:
             if fact[4] == mes_anterior and int(fact[5]) == año_anterior:
                 return fact  # Factura encontrada
         
-        return None  # No se encontró una factura del mes anterior
+        return None  # No se encontró una factura del mes anterior     
 
+    def obtener_total_facturas_anteriores(self):
+        """
+        Suma los valores planillados (fact[7]) de todas las facturas anteriores a la factura actual.
+        """
+        total = 0.0
+        mes_actual = self.factura[4]
+        anio_actual = int(self.factura[5])
 
+        meses = {
+            "Enero": 1, "Febrero": 2, "Marzo": 3, "Abril": 4, "Mayo": 5, "Junio": 6,
+            "Julio": 7, "Agosto": 8, "Septiembre": 9, "Octubre": 10, "Noviembre": 11, "Diciembre": 12
+        }
+
+        mes_actual_num = meses.get(mes_actual)
+
+        for fact in self.facturas_contratisa:
+            mes_fact_num = meses.get(fact[4])
+            anio_fact = int(fact[5])
+
+            if (anio_fact < anio_actual) or (anio_fact == anio_actual and mes_fact_num < mes_actual_num):
+                total += fact[7]
+
+        return total
+    
+
+    #----- Imprimir pdf de hoja de multas
+
+    def exportar_hoja_multas_pdf(self, ruta_excel, nombre_pdf="Multas.pdf"):
+        try:
+            # Iniciar Excel
+            excel = win32com.client.Dispatch("Excel.Application")
+            excel.Visible = False
+            excel.DisplayAlerts = False
+
+            # Abrir archivo Excel
+            wb = excel.Workbooks.Open(ruta_excel)
+
+            # Verificar si la hoja "Multas" existe
+            hoja_multas = None
+            for hoja in wb.Sheets:
+                if hoja.Name.strip().lower() == "multas":
+                    hoja_multas = hoja
+                    break
+
+            if hoja_multas is None:
+                raise ValueError("La hoja 'Multas' no existe en el archivo Excel.")
+
+            # Seleccionar hoja y exportar
+            hoja_multas.Select()
+            ruta_pdf = os.path.normpath(os.path.splitext(ruta_excel)[0] + "Analisis de multas.pdf")
+
+            print(f"Exportando a: {ruta_pdf}")
+            hoja_multas.ExportAsFixedFormat(0, ruta_pdf)
+
+            # Cerrar Excel correctamente
+            wb.Close(SaveChanges=False)
+            excel.Quit()
+
+            print("✅ PDF generado exitosamente en:", ruta_pdf)
+
+        except Exception as e:
+            print("❌ Error al exportar hoja Multas a PDF:", e)
+            try:
+                excel.Quit()
+            except:
+                pass  # Por si ya está cerrado
 
     def generar_excel(self):
         print("generando excel")
@@ -286,7 +353,6 @@ class Generar_Docs:
                 porcentaje_anticipo = 0.0
         except (TypeError, ValueError):
             porcentaje_anticipo = 0.0
-        hojaPpago["F49"]= valor_anticipo
         hojaPpago["F38"] = math.trunc((float(hojaPpago["E21"].value) * porcentaje_anticipo) * 100) / 100                       #Anticipo 10%
         hojaPpago["F39"]=math.trunc((float(hojaPpago["G33"].value)*0.0275)*100)/100                    #Impuesto a la renta 2.75%
         hojaPpago["F40"]=math.trunc((float(hojaPpago["G34"].value)*0.7)*100)/100                      #Retencion al Iva 70%
@@ -301,25 +367,7 @@ class Generar_Docs:
         hojaPpago["B53"]="Observaciones: Se adjunta documentación de soporte de factura No. "+self.factura[2]+" e informe de Fiscalización de fecha "+datetime.today().strftime("%d/%m/%Y")+" correspondiente a la planilla Nro. "+self.obtener_planilla()
         
         #----------------------------------------------------------------------------
-        #  HOJA MULTAS
-        hojaMulta = wb["Multas"]
-        #-----------------------------------------------------------------------------
-        
-        #-----------------ENCABEZADO --------------------
-
-        hojaMulta["A8"] = "ANÁLISIS DE MULTAS PARA EL" \
-        " SEERVICIO DE LIMPIEZA TIPO III, DE ACUERDO A LA ORDEN DE COMPRA: "+self.contratista[1]
-
-        fecha_inicio_mes = f"01-{self.obtener_fecha_fin_mes(self.factura[4], self.factura[5])[3:]}"
-        hojaMulta["C13"] = self.fecha_a_texto("f2", fecha_inicio_mes)
-        #hojaMulta["C13"] = self.fecha_a_texto("f2",self.contratista[4])
-        hojaMulta["C14"] = self.fecha_a_texto("f2",self.obtener_fecha_fin_mes(self.factura[4],self.factura[5]))
-        hojaMulta["C15"] = self.fecha_a_texto("f2",self.obtener_fecha_fin_mes(self.factura[4],self.factura[5]))
-        hojaMulta["C16"]=  str(self.factura[8])+" días"
-        hojaMulta["A29"]=  self.administrador
-
-         #----------------------------------------------------------------------------
-        #  HOJA ESTADO
+              #  HOJA ESTADO
         hojaEstado = wb["Estado"]
         #-----------------------------------------------------------------------------
         
@@ -359,9 +407,11 @@ class Generar_Docs:
             hojaEstado["F48"]=hojaEstado["G40"].value                                 #saldo total a cancelar
 
         else:
-            hojaEstado["F24"]=self.factura[7]+factura_anterior[7]              #valor ejecutado hasta la fecha
+    # Calcular suma de valores planillados anteriores a la factura actual
+            
+            hojaEstado["F24"]=self.factura[7]+self.obtener_total_facturas_anteriores()              #valor ejecutado hasta la fecha
             hojaEstado["G24"]= str(math.trunc(float((float(hojaEstado["F24"].value)/self.contratista[3])*100)*100)/100)+"%"   #porcentaje
-            hojaEstado["F25"]=factura_anterior[7]                            #valor ejecutado en el estado anterior
+            hojaEstado["F25"]=self.obtener_total_facturas_anteriores()         #valor ejecutado en el estado anterior
             hojaEstado["G26"]=self.factura[7]              #valor de la presente planilla
             hojaEstado["G27"]=math.trunc((self.factura[7]*0.15)*100)/100   #iva 15%
             hojaEstado["G28"]=math.trunc((float(hojaPpago["G33"].value)+float(hojaPpago["G34"].value))*100)/100 #valor total
@@ -374,7 +424,7 @@ class Generar_Docs:
             hojaEstado["G39"]=hojaPpago["G43"].value    #total retencones
             hojaEstado["G40"]=hojaPpago["G47"].value    #valor liquido
             #cuadro de devoluciones danticipo_entregadoe anticipos
-            
+            # corregir porque los anticipos varian de uno a otro esto es urgente arreglar
             nro_planilla = int(self.obtener_planilla())  # transformar numero de planilla de str a floar
             valor_anticipo_mensual = float(hojaEstado["F31"].value)  #valor mensual amortizado en float para texto
             valor_amortizado = (nro_planilla - 1) * valor_anticipo_mensual #valor amortizado hasta la planilla anterior
@@ -384,6 +434,26 @@ class Generar_Docs:
             hojaEstado["F46"]=hojaEstado["F31"].value+hojaEstado["F45"].value                          #anticipo toal a la fecha
             hojaEstado["F48"]=hojaEstado["G40"].value                                 #saldo total a cancelar
 
+#  HOJA MULTAS
+        hojaMulta = wb["Multas"]
+        #-----------------------------------------------------------------------------
+        
+        #-----------------ENCABEZADO --------------------
+
+        hojaMulta["A8"] = "ANÁLISIS DE MULTAS PARA EL" \
+        " SEERVICIO DE LIMPIEZA TIPO III, DE ACUERDO A LA ORDEN DE COMPRA: "+self.contratista[1]
+
+        fecha_inicio_mes = f"01-{self.obtener_fecha_fin_mes(self.factura[4], self.factura[5])[3:]}"
+        hojaMulta["C13"] = self.fecha_a_texto("f2", fecha_inicio_mes)
+        #hojaMulta["C13"] = self.fecha_a_texto("f2",self.contratista[4])
+        hojaMulta["C14"] = self.fecha_a_texto("f2",self.obtener_fecha_fin_mes(self.factura[4],self.factura[5]))
+        hojaMulta["C15"] = self.fecha_a_texto("f2",self.obtener_fecha_fin_mes(self.factura[4],self.factura[5]))
+        hojaMulta["C16"]=  str(self.factura[8])+" días"
+        hojaMulta["A29"]=  self.administrador
+
+         #----------------------------------------------------------------------------
+        #hojas = wb._sheets
+        #hojas.sort(key=lambda hoja: ["Ppago", "Estado", "Multas"].index(hoja.title))
 
         return wb
 
@@ -461,6 +531,9 @@ class Generar_Docs:
                 docExcelPago=self.generar_excel()
                 ruta_guardado = os.path.join(carpeta_seleccionada, "resultado.xlsx")
                 docExcelPago.save(ruta_guardado)
+                # Solo si también se quiere PDF
+                if self.pdf == True:
+                    self.exportar_hoja_multas_pdf(ruta_guardado)
             valor=True
         return valor
 
