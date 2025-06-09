@@ -105,7 +105,7 @@ def obtener_pantalla_informes(): #debo hacer validaciones
         c1 = ft.Checkbox(label="Acta de Entrega/Recepción", value=False)
         c2 = ft.Checkbox(label="Informe Administrador", value=False)
         c3 = ft.Checkbox(label="Modelo Quipux", value=False)
-        word = ft.Checkbox(label="Crear Word", value=False)
+        word = ft.Checkbox(label="Crear Editables", value=False)
         pdf = ft.Checkbox(label="Crear PDF", value=False)
         excel = ft.Checkbox(label="Generar Excel de la planilla de Pago", value=False)
        
@@ -133,14 +133,14 @@ def obtener_pantalla_informes(): #debo hacer validaciones
                     ft.Divider(color=ft.Colors.BLACK12, thickness=2),
                     ft.Row(controls=[ft.Text("Seleccione los documentos a generar:"),]),
                     ft.Row(
-                        controls=[c1, c2, c3],
+                        controls=[c1, c2, c3,excel],
                     ),
                     ft.Divider(color=ft.Colors.BLACK, thickness=2),
                     ft.Row(controls=[ft.Text("Seleccione el formato:"),]),
                     ft.Row(
                         vertical_alignment=ft.CrossAxisAlignment.CENTER,
                         alignment=ft.MainAxisAlignment.CENTER,
-                        controls=[word, pdf,excel],
+                        controls=[word, pdf],
                     ),
                     ft.Row(
                         vertical_alignment=ft.CrossAxisAlignment.CENTER,
