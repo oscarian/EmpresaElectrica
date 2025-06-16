@@ -9,7 +9,7 @@ from tkinter import messagebox
 def obtener_pantalla_informes(): #debo hacer validaciones
         
 
-        administrador = ft.TextField(dense=True,label="Ingrese el administrador", border_color= ft.Colors.GREY_100,bgcolor=ft.Colors.GREY_50)
+        administrador = ft.TextField(dense=True,label="Ingrese el administrador", border_color= ft.colors.GREY_100,bgcolor=ft.colors.GREY_50)
         def dropdown_change_contratista(e):
             contratista_id=""
             for contratista in contratistas:
@@ -113,14 +113,14 @@ def obtener_pantalla_informes(): #debo hacer validaciones
             text="Generar",
             icon=ft.icons.ADD_CIRCLE,
             icon_color="white",
-            style=ft.ButtonStyle(color="white",bgcolor=ft.Colors.BLUE_700,),
+            style=ft.ButtonStyle(color="white",bgcolor=ft.colors.BLUE_700,),
             on_click=generar_informes,
             animate_scale=ft.Animation(300, ft.AnimationCurve.BOUNCE_OUT),  # Animación al hacer clic
-            on_hover=lambda e: (setattr(e.control, "style", ft.ButtonStyle(color="white",bgcolor=ft.Colors.BLUE_900 if e.data == "true" else ft.Colors.BLUE_800)),e.control.update()),
+            on_hover=lambda e: (setattr(e.control, "style", ft.ButtonStyle(color="white",bgcolor=ft.colors.BLUE_900 if e.data == "true" else ft.colors.BLUE_800)),e.control.update()),
         )
 
         formulario = ft.Container(
-            bgcolor= ft.Colors.WHITE10,
+            bgcolor= ft.colors.WHITE10,
             border_radius=50,
             padding=ft.padding.all(50),
             
@@ -130,12 +130,12 @@ def obtener_pantalla_informes(): #debo hacer validaciones
                     administrador,
                     dropdown_contratista,
                     dropdown_factura,
-                    ft.Divider(color=ft.Colors.BLACK12, thickness=2),
+                    ft.Divider(color=ft.colors.BLACK12, thickness=2),
                     ft.Row(controls=[ft.Text("Seleccione los documentos a generar:"),]),
                     ft.Row(
                         controls=[c1, c2, c3,excel],
                     ),
-                    ft.Divider(color=ft.Colors.BLACK, thickness=2),
+                    ft.Divider(color=ft.colors.BLACK, thickness=2),
                     ft.Row(controls=[ft.Text("Seleccione el formato:"),]),
                     ft.Row(
                         vertical_alignment=ft.CrossAxisAlignment.CENTER,

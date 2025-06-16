@@ -6,20 +6,20 @@ datos_contratista={}
 fecha = ""
 def obtener_pantalla_facturas(): #debo hacer validaciones
         
-        nro_factura = ft.TextField(dense=True,label="Número de Factura",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50,color=ft.Colors.BLACK)
-        #fecha = ft.TextField(dense=True,label="Fecha",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50)
-        mes_pago=ft.TextField(dense=True,label="Mes de Pago",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50,color=ft.Colors.BLACK)
-        anio_pago=ft.TextField(dense=True,label="Año de Pago",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50,color=ft.Colors.BLACK)
-        nro_dias = ft.TextField(dense=True,label="Número de días",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50,color=ft.Colors.BLACK)
-        valor_factura = ft.TextField(dense=True,label="Valor de la factura",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50,color=ft.Colors.BLACK)
-        dias_multa=ft.TextField(dense=True,label="Días de Multa",border_color= ft.Colors.GREY_100,bgcolor=ft.colors.GREY_50,color=ft.Colors.BLACK)
+        nro_factura = ft.TextField(dense=True,label="Número de Factura",border_color= ft.colors.GREY_100,bgcolor=ft.colors.GREY_50,color=ft.colors.BLACK)
+        #fecha = ft.TextField(dense=True,label="Fecha",border_color= ft.colors.GREY_100,bgcolor=ft.colors.GREY_50)
+        mes_pago=ft.TextField(dense=True,label="Mes de Pago",border_color= ft.colors.GREY_100,bgcolor=ft.colors.GREY_50,color=ft.colors.BLACK)
+        anio_pago=ft.TextField(dense=True,label="Año de Pago",border_color= ft.colors.GREY_100,bgcolor=ft.colors.GREY_50,color=ft.colors.BLACK)
+        nro_dias = ft.TextField(dense=True,label="Número de días",border_color= ft.colors.GREY_100,bgcolor=ft.colors.GREY_50,color=ft.colors.BLACK)
+        valor_factura = ft.TextField(dense=True,label="Valor de la factura",border_color= ft.colors.GREY_100,bgcolor=ft.colors.GREY_50,color=ft.colors.BLACK)
+        dias_multa=ft.TextField(dense=True,label="Días de Multa",border_color= ft.colors.GREY_100,bgcolor=ft.colors.GREY_50,color=ft.colors.BLACK)
         
         contratos = controlador_contratista.obtener_contratistas()
         def dropdown_changed(e):
             t.value = f"{dropdown_factura.value}"
         t=ft.Text() 
 
-        dropdown_factura =ft.Dropdown(on_change=dropdown_changed, label="Contratista", hint_text="Escoja un contratista", autofocus=True,color=ft.Colors.BLACK)
+        dropdown_factura =ft.Dropdown(on_change=dropdown_changed, label="Contratista", hint_text="Escoja un contratista", autofocus=True,color=ft.colors.BLACK)
         dropdown_factura.options.clear
         for contrato in contratos:
                 dropdown_factura.options.append(ft.dropdown.Option(contrato[2]))
@@ -212,7 +212,7 @@ def obtener_pantalla_facturas(): #debo hacer validaciones
         )
 
         table = ft.Container(
-            bgcolor= ft.Colors.WHITE10,
+            bgcolor= ft.colors.WHITE10,
             border_radius=10,
             col = 8,
             padding=ft.padding.all(10),
@@ -227,7 +227,7 @@ def obtener_pantalla_facturas(): #debo hacer validaciones
                                 ft.IconButton(
                                     icon= ft.icons.EDIT,
                                     ###on_click= edit_flied_text,
-                                    icon_color= ft.Colors.GREY_800,
+                                    icon_color= ft.colors.GREY_800,
                                 ),
                                   
                             ]
